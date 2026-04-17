@@ -1,0 +1,8 @@
+# CommPlexAPI/data/.gitkeep
+#
+# This file ensures the data/ directory is tracked by Git.
+# The SQLite database (commplex_leads.db) lives here at runtime
+# but is excluded by .gitignore.
+#
+# Docker volume: mounted at /app/data in the container.
+# Local dev:     DATABASE_URL=sqlite:///./data/commplex_leads.db

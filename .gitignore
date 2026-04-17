@@ -1,0 +1,100 @@
+# Arc Badlands CommPlex — .gitignore
+# ============================================================
+
+# ── Secrets (NEVER commit these) ──────────────────────────
+.env
+.env.local
+.env.production
+service-account.json
+*.json.key
+secrets/
+credentials/
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# ── Virtual environments ───────────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+.python-version
+
+# ── Database files ─────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+commplex_leads.db
+
+# ── Logs ──────────────────────────────────────────────────
+*.log
+logs/
+setup_log.txt
+finalization_log.txt
+
+# ── Node / JavaScript ──────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# ── OS artifacts ──────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDEs ──────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+
+# ── Docker ────────────────────────────────────────────────
+.dockerignore
+
+# ── Screenshots / Playwright ──────────────────────────────
+screenshots/
+playwright-report/
+
+# ── GCP / Cloud artifacts ─────────────────────────────────
+.gcp/
+gcloud/
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# ── Project-specific ──────────────────────────────────────
+# Deprecated archive — keep in deprecated/ but don't re-commit
+deprecated/archive_*
+
+# Monolith context files — generated, not source
+monolith_context/*.txt
+CommPlex_AGGREGATE_ARCHIVE.txt
+
+# Test output
+test_results/
+*.test.db

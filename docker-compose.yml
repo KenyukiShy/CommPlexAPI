@@ -1,0 +1,77 @@
+version: "3.9"
+
+# Arc Badlands CommPlex — Docker Compose
+# Domain: CommPlexAPI (The Mouth)
+#
+# Usage:
+#   docker-compose up          — Start API + DB
+#   docker-compose up -d       — Detached (background)
+#   docker-compose down        — Stop all services
+#   docker-compose logs -f api — Stream API logs
+#
+# Requirements: docker, docker-compose
+# Default: SQLite (no external DB needed for dev)
+# Production: uncomment postgres service + update DATABASE_URL
+
+services:
+
+  # ── FastAPI Gateway ───────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: commplex_api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      - PORT=8080
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./commplex_leads.db}
+      - VERTEX_STATUS=${VERTEX_STATUS:-STUB}
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-}
+      - NTFY_TOPIC=${NTFY_TOPIC:-}
+      - NTFY_SERVER=${NTFY_SERVER:-https://ntfy.sh}
+      - BLAND_API_KEY=${BLAND_API_KEY:-}
+      - SLUICE_PRICE_STANDARD=${SLUICE_PRICE_STANDARD:-28500}
+      - SLUICE_PRICE_AGGRESSIVE=${SLUICE_PRICE_AGGRESSIVE:-24000}
+      - SLUICE_MIN_YEAR=${SLUICE_MIN_YEAR:-2020}
+      - DRY_RUN=${DRY_RUN:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./data:/app/data                  # SQLite persistence
+      - ./service-account.json:/app/service-account.json:ro  # GCP creds (if using)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - commplex_net
+
+  # ── PostgreSQL (Production — uncomment when ready) ─────────
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: commplex_postgres
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB:       commplex
+  #     POSTGRES_USER:     commplex
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - commplex_net
+  #
+  # When using PostgreSQL, set in .env:
+  # DATABASE_URL=postgresql://commplex:changeme@postgres:5432/commplex
+
+networks:
+  commplex_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
